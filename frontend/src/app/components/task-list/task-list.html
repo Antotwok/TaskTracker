@@ -25,6 +25,8 @@
 
 <hr>
 
+<p *ngIf="filteredTasks.length === 0">No tasks yet.</p>
+
 <div class="task-item" *ngFor="let task of filteredTasks; trackBy: trackById">
 
   <h3>{{ task.title }}</h3>
