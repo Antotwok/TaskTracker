@@ -7,5 +7,5 @@ CREATE TABLE tasks (
         CHECK (priority IN ('Low', 'Medium', 'High')),
     status VARCHAR(50) NOT NULL DEFAULT 'pending',
     is_done BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
