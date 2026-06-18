@@ -64,19 +64,25 @@ router.post('/', async (req, res) => {
       title,
       description,
       due_date,
-      priority
+      priority = 'Medium',
+      is_done = false
     } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
 
     const result = await pool.query(
       `INSERT INTO tasks
-      (title, description, due_date, priority)
-      VALUES ($1,$2,$3,$4)
+      (title, description, due_date, priority, is_done)
+      VALUES ($1,$2,$3,$4,$5)
       RETURNING *`,
       [
-        title,
-        description,
-        due_date,
-        priority
+        title.trim(),
+        description || null,
+        due_date || null,
+        priority,
+        is_done
       ]
     );
 
@@ -97,8 +103,12 @@ router.put('/:id', async (req, res) => {
       description,
       due_date,
       priority,
-      is_done
+      is_done = false
     } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
 
     const result = await pool.query(
       `
@@ -113,9 +123,9 @@ router.put('/:id', async (req, res) => {
       RETURNING *
       `,
       [
-        title,
-        description,
-        due_date,
+        title.trim(),
+        description || null,
+        due_date || null,
         priority,
         is_done,
         req.params.id

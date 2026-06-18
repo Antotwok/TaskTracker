@@ -3,8 +3,6 @@
   {{ doneCount }} Done
 </h2>
 
-<button (click)="addQuickTask()">Add New Task</button>
-
 <label>Status:</label>
 
 <select [(ngModel)]="statusFilter" (change)="applyFilters()">
@@ -27,7 +25,7 @@
 
 <hr>
 
-<div *ngFor="let task of filteredTasks; trackBy: trackById">
+<div class="task-item" *ngFor="let task of filteredTasks; trackBy: trackById">
 
   <h3>{{ task.title }}</h3>
 
@@ -48,19 +46,21 @@
     {{ task.is_done ? 'Done' : 'Pending' }}
   </p>
 
-  <button
-    (click)="toggleDone(task)">
+  <div class="task-actions">
+    <button
+      (click)="toggleDone(task)">
 
-    {{ task.is_done ? 'Mark Pending' : 'Mark Done' }}
+      {{ task.is_done ? 'Mark Pending' : 'Mark Done' }}
 
-  </button>
+    </button>
 
-  <button
-    (click)="deleteTask(task.id!)">
+    <button
+      (click)="deleteTask(task.id!)">
 
-    Delete
+      Delete
 
-  </button>
+    </button>
+  </div>
 
   <hr>
 

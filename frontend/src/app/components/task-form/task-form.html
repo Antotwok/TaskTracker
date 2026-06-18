@@ -1,1 +1,53 @@
-<p>task-form works!</p>
+<div class="task-form-shell">
+  <button type="button" class="primary-button" (click)="toggleForm()">
+    {{ showForm ? 'Cancel' : 'Add Task' }}
+  </button>
+
+  <form *ngIf="showForm" (ngSubmit)="addTask()" #taskForm="ngForm" class="task-form">
+    <label>
+      Title *
+      <input
+        type="text"
+        name="title"
+        [(ngModel)]="task.title"
+        required
+        maxlength="200"
+        placeholder="Enter task title"
+      />
+    </label>
+
+    <label>
+      Description
+      <textarea
+        name="description"
+        [(ngModel)]="task.description"
+        rows="3"
+        placeholder="Add a short note"
+      ></textarea>
+    </label>
+
+    <label>
+      Due Date
+      <input
+        type="date"
+        name="due_date"
+        [(ngModel)]="task.due_date"
+      />
+    </label>
+
+    <label>
+      Priority
+      <select name="priority" [(ngModel)]="task.priority" required>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </label>
+
+    <div class="task-form-actions">
+      <button type="submit" class="primary-button" [disabled]="!taskForm.form.valid">
+        Save Task
+      </button>
+    </div>
+  </form>
+</div>

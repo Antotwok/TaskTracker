@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 import { Task } from '../../models/task';
 import { TaskService } from '../../services/task.service';
@@ -15,19 +16,30 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './task-list.html',
   styleUrls: ['./task-list.css']
 })
-export class TaskList implements OnInit {
+export class TaskList implements OnInit, AfterViewInit {
 
   tasks: Task[] = [];
 
   statusFilter = 'All';
   priorityFilter = 'All';
+  private refreshSubscription?: Subscription;
 
   constructor(
     private taskService: TaskService
   ) {}
 
   ngOnInit() {
-    this.loadFromServer();
+    this.refreshSubscription = this.taskService.refresh$.subscribe(() => {
+      this.loadFromServer();
+    });
+  }
+
+  ngAfterViewInit() {
+    queueMicrotask(() => this.loadFromServer());
+  }
+
+  ngOnDestroy() {
+    this.refreshSubscription?.unsubscribe();
   }
 
   loadFromServer() {
@@ -72,11 +84,10 @@ export class TaskList implements OnInit {
       is_done: !task.is_done
     };
 
-    this.taskService
-      .updateTask(task.id!, updatedTask)
-      .subscribe(() => {
-        this.loadFromServer();
-      });
+    this.taskService.updateTask(task.id!, updatedTask).subscribe({
+      next: () => this.taskService.refreshTasks(),
+      error: (err) => console.error('Failed to update task', err)
+    });
   }
 
   deleteTask(id: number) {
@@ -85,31 +96,11 @@ export class TaskList implements OnInit {
       return;
     }
 
-    this.taskService
-      .deleteTask(id)
-      .subscribe(() => {
-        this.loadFromServer();
-      });
+    this.taskService.deleteTask(id).subscribe({
+      next: () => this.taskService.refreshTasks(),
+      error: (err) => console.error('Failed to delete task', err)
+    });
   }
-
-    addQuickTask() {
-      const newTask: Partial<Task> = {
-        title: 'New Task',
-        description: '',
-        priority: 'Medium',
-        is_done: false
-      };
-
-      this.taskService.addTask(newTask as Task).subscribe({
-        next: () => {
-          this.loadFromServer();
-        },
-        error: (err) => {
-          console.error('Failed to add task', err);
-          alert('Failed to create task');
-        }
-      });
-    }
 
   get filteredTasks() {
 

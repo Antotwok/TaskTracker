@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { Task } from '../../models/task';
@@ -6,12 +7,11 @@ import { Task } from '../../models/task';
 @Component({
   selector: 'app-task-form',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './task-form.html',
   styleUrls: ['./task-form.css'],
 })
 export class TaskForm {
-
   task: Task = {
     title: '',
     description: '',
@@ -20,9 +20,25 @@ export class TaskForm {
     is_done: false
   } as Task ;
 
+  showForm = false;
+
   constructor(
     private taskService: TaskService
   ) {}
+
+  toggleForm() {
+    this.showForm = !this.showForm;
+  }
+
+  resetForm() {
+    this.task = {
+      title: '',
+      description: '',
+      due_date: '',
+      priority: 'Medium',
+      is_done: false
+    };
+  }
 
   addTask() {
 
@@ -37,15 +53,10 @@ export class TaskForm {
 
           alert('Task Added Successfully');
 
-          this.task = {
-            title: '',
-            description: '',
-            due_date: '',
-            priority: 'Medium',
-            is_done: false
-          };
+          this.resetForm();
+          this.showForm = false;
+          this.taskService.refreshTasks();
 
-          location.reload();
         },
         error: (err) => {
           console.error(err);

@@ -1,11 +1,9 @@
 CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(200) NOT NULL,
     description TEXT,
     due_date DATE,
-    priority VARCHAR(10) NOT NULL,
-        CHECK (priority IN ('Low', 'Medium', 'High')),
-    status VARCHAR(50) NOT NULL DEFAULT 'pending',
+    priority VARCHAR(10) NOT NULL CHECK (priority IN ('Low', 'Medium', 'High')),
     is_done BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

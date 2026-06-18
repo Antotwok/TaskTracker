@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Task } from '../models/task';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
+  private readonly refreshSubject = new Subject<void>();
+  readonly refresh$ = this.refreshSubject.asObservable();
 
   private apiUrl =
     'http://localhost:3000/api/tasks';
@@ -48,5 +50,9 @@ export class TaskService {
     return this.http.delete(
       `${this.apiUrl}/${id}`
     );
+  }
+
+  refreshTasks() {
+    this.refreshSubject.next();
   }
 }
