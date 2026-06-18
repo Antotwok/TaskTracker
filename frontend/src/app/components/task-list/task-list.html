@@ -1,0 +1,67 @@
+<h2>
+  {{ pendingCount }} Pending |
+  {{ doneCount }} Done
+</h2>
+
+<button (click)="addQuickTask()">Add New Task</button>
+
+<label>Status:</label>
+
+<select [(ngModel)]="statusFilter" (change)="applyFilters()">
+  <option>All</option>
+  <option>Pending</option>
+  <option>Done</option>
+</select>
+
+
+<label>Priority:</label>
+
+<select [(ngModel)]="priorityFilter" (change)="applyFilters()">
+  <option>All</option>
+  <option>Low</option>
+  <option>Medium</option>
+  <option>High</option>
+</select>
+
+<button (click)="loadFromServer()">Refresh</button>
+
+<hr>
+
+<div *ngFor="let task of filteredTasks; trackBy: trackById">
+
+  <h3>{{ task.title }}</h3>
+
+  <p>{{ task.description }}</p>
+
+  <p>
+    Due:
+    {{ task.due_date | date }}
+  </p>
+
+  <p>
+    Priority:
+    {{ task.priority }}
+  </p>
+
+  <p>
+    Status:
+    {{ task.is_done ? 'Done' : 'Pending' }}
+  </p>
+
+  <button
+    (click)="toggleDone(task)">
+
+    {{ task.is_done ? 'Mark Pending' : 'Mark Done' }}
+
+  </button>
+
+  <button
+    (click)="deleteTask(task.id!)">
+
+    Delete
+
+  </button>
+
+  <hr>
+
+</div>
